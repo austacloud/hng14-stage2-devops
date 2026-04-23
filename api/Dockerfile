@@ -3,7 +3,7 @@ FROM python:3.11-slim AS builder
 
 WORKDIR /app
 
-COPY api/ /app/
+COPY api/ /app/api/
 
 COPY requirements.txt .
 RUN pip install --user --no-cache-dir -r requirements.txt
@@ -22,7 +22,7 @@ RUN useradd -m appuser
 COPY --from=builder /root/.local /home/appuser/.local
 
 # Copy app code
-COPY . .
+COPY api/ /app/api/
 
 RUN chown -R appuser:appuser /app
 
@@ -39,4 +39,4 @@ HEALTHCHECK --interval=10s --timeout=5s --retries=5 \
 CMD curl -f http://localhost:8000/health || exit 1
 
 # Run app
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
