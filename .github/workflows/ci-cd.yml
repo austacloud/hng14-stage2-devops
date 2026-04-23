@@ -175,20 +175,29 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Start full stack
+      - name: Build Docker images
         run: docker compose up -d
 
       - name: Wait for API health
         run: |
+          docker build -t hng14-stage2-devops-api -f ./api/Dockerfile .
+          docker build -t hng14-stage2-devops-worker -f ./worker/Dockerfile .
+          docker build -t hng14-stage2-devops-frontend -f ./frontend/Dockerfile ./frontend
+
+      - name: Start full stack    
+        run: docker compose up -d
+
+      - name: Wait for API health       
+        run:
           for i in {1..30}; do
             if curl -sf http://localhost:8000/health; then
-              echo "API is up"
-              exit 0
-            fi
+             echo "API is up"
+             exit 1
+            fi 
             sleep 5
-          done
-          echo "API failed"
-          exit 1
+         done 
+         echo "API failed"
+         exit 1
 
       - name: Submit job
         run: |
