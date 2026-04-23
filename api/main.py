@@ -1,10 +1,12 @@
 from fastapi import FastAPI
 import redis
 import uuid
+import os
 
 app = FastAPI()
 
-r = redis.Redis(host="redis", port=6379, decode_responses=True)
+redis_host = os.getenv("REDIS_HOST", "localhost")
+r = redis.Redis(host=redis_host, port=6379)
 
 
 @app.get("/")

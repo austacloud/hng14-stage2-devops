@@ -1,12 +1,11 @@
+import os
 import redis
 import time
 
 # FIX: safe Redis connection + auto decode
-r = redis.Redis(
-    host="redis",
-    port=6379,
-    decode_responses=True
-)
+redis_host = os.getenv("REDIS_HOST", "localhost")
+r = redis.Redis(host=redis_host, port=6379)
+
 print("Worker started... waiting for jobs")
 
 
