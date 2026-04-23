@@ -1,4 +1,3 @@
-import pytest
 from unittest.mock import patch
 from fastapi.testclient import TestClient
 from api.main import app
@@ -6,6 +5,8 @@ from api.main import app
 client = TestClient(app)
 
 # ---------------- HEALTH CHECK ----------------
+
+
 def test_health():
     response = client.get("/health")
     assert response.status_code == 200
