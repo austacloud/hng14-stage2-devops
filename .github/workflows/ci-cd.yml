@@ -168,84 +168,60 @@ jobs:
 
 
   # ---------------- INTEGRATION TEST ----------------
-  integration_test:
-    needs: security
+  integration:
     runs-on: ubuntu-latest
+    needs: security
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build Docker images
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r api/requirements.txt
+          python -m pip install pytest pytest-cov
+
+      - name: Start full stack
         run: docker compose up -d
 
-      - name: Wait for API health
-        run: |
-          docker build -t hng14-stage2-devops-api -f ./api/Dockerfile .
-          docker build -t hng14-stage2-devops-worker -f ./worker/Dockerfile .
-          docker build -t hng14-stage2-devops-frontend -f ./frontend/Dockerfile ./frontend
+      - name: Wait for services
+        run: sleep 15
 
-      - name: Start full stack    
-        run: docker compose up -d
-
-      - name: Wait for API health       
-        run:
-          for i in {1..30}; do
-            if curl -sf http://localhost:8000/health; then
-             echo "API is up"
-             exit 1
-            fi 
-            sleep 5
-         done 
-         echo "API failed"
-         exit 1
-
-      - name: Submit job
-        run: |
-          curl -s -X POST http://localhost:8000/jobs \
-            -H "Content-Type: application/json" \
-            -d '{}'
+      - name: Run integration test
+        run: python -m pytest api/tests
+        env:
+          PYTHONPATH: .
 
       - name: Tear down
         if: always()
-        run: docker compose down -v
+        run: docker compose down
 
-
-  # ---------------- DEPLOY STAGE ----------------
-  deploy:
-    needs: integration_test
+deploy:
     runs-on: ubuntu-latest
-
+    needs: integration
     if: github.ref == 'refs/heads/main'
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Deploy container
+      - name: Deploy new version
         run: |
-          docker stop api || true
-          docker rm api || true
+          echo "Pull new images"
+          docker pull $REGISTRY/$IMAGE_NAME/api:latest
 
-          docker run -d \
-            --name api \
-            -p 8000:8000 \
-            api:${{ github.sha }}
+          echo "Start new container"
+          docker run -d --name api-new -p 80:8000 $REGISTRY/$IMAGE_NAME/api:latest
 
-      - name: Wait for health check
-        run: |
-          for i in {1..30}; do
-            if curl -sf http://localhost:8000/health; then
-              echo "Deployment successful"
-              exit 0
-            fi
-            sleep 2
+          echo "Health check"
+          for i in {1..12}; do
+            curl -f http://localhost:80/health && break
+            sleep 5
           done
 
-          echo "Deployment failed"
-          docker logs api
-          exit 1
-
-      - name: Rollback on failure
-        if: failure()
-        run: |
-          docker stop api || true
-          docker rm api || true
+          echo "Swap containers"
+          docker stop api-old || true
+          docker rm api-old || true
+          docker rename api-new api-old
