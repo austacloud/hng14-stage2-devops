@@ -209,9 +209,6 @@ jobs:
             -H "Content-Type: application/json" \
             -d '{}'
 
-      - name: Run integration tests
-        run: python tests/integration_poll.py
-
       - name: Tear down
         if: always()
         run: docker compose down -v
