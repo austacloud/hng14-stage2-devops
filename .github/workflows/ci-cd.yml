@@ -77,13 +77,8 @@ jobs:
       # ---------------- RUN API CONTAINER ---------------
 
       - name: Run tests inside container
-        run: |
-          docker run \
-          --network ${{ job.services.redis.network }} \
-          -e REDIS_HOST=redis \
-          api:${{ github.sha }} \ 
-          pytest --cov=api --cov=worker --cov-report=xml
-
+        run: docker run --network ${{ job.services.redis.network }} -e REDIS_HOST=redis api:${{ github.sha }} pytest --cov=api --cov=worker --cov-report=xml
+          
       - name: Upload coverage
         uses: actions/upload-artifact@v4
         with:
