@@ -1,11 +1,11 @@
+import pytest
+from unittest.mock import patch
 from fastapi.testclient import TestClient
-from api.main import app   # adjust if your file name is different
+from api.main import app
 
 client = TestClient(app)
 
 # ---------------- HEALTH CHECK ----------------
-
-
 def test_health():
     response = client.get("/health")
     assert response.status_code == 200
@@ -13,7 +13,10 @@ def test_health():
 
 
 # ---------------- CREATE JOB ----------------
-def test_create_job():
+@patch("api.main.r")
+def test_create_job(mock_redis):
+    mock_redis.lpush.return_value = 1
+
     response = client.post("/jobs", json={})
     assert response.status_code == 200
 
@@ -22,8 +25,12 @@ def test_create_job():
 
 
 # ---------------- GET JOB STATUS ----------------
-def test_get_job_status():
-    # create job first
+@patch("api.main.r")
+def test_get_job_status(mock_redis):
+    mock_redis.lpush.return_value = 1
+    mock_redis.get.return_value = "completed"
+
+    # create job
     create = client.post("/jobs", json={})
     job_id = create.json()["job_id"]
 
