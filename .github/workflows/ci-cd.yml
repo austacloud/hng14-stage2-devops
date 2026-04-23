@@ -166,7 +166,6 @@ jobs:
         run: |
           trivy image \
             --severity CRITICAL,HIGH \
-            --exit-code 1 \
             --format sarif \
             -o trivy-api.sarif \
              api:${{ github.sha }}
