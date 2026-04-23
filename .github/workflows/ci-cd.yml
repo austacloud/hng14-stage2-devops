@@ -147,7 +147,7 @@ jobs:
 
       - name: Build Frontend image
         run: |
-          docker build -t frontend:${{ github.sha }} -f frontend/Dockerfile .
+          docker build -t frontend:${{ github.sha }} -f frontend/Dockerfile frontend/
 
       - name: Build Worker image
         run: |
