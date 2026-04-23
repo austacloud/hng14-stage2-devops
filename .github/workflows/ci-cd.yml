@@ -84,12 +84,35 @@ jobs:
           pip install -r requirements.txt
           pip install pytest pytest-cov
 
-      - name: Wait for Redis
-        run:  sleep 5
+      # ---------------- BUILD API IMAGE ----------------
+
+      - name: Build API image
+        run: |
+          docker build -t api:${{ github.sha }} -f api/Dockerfile .
+
+      # ---------------- RUN API CONTAINER ---------------
+
+      - name: Run API container
+        run: |
+          docker stop api || true
+          docker rm api || true
+
+          docker run -d \
+            --name api \
+            -p 8000:8000 \
+            api:${{ github.sha }}
+
+      - name: Wait for API health
+        run: |
+          for i in {1..30}; do
+            curl -f http://localhost:8000/health && exit 0
+            sleep 2
+          done
+          exit 1
 
       - name: Run tests
         env:
-          REDIS_HOST: localhost
+          REDIS_HOST: redis
         run: pytest --cov=api --cov=worker --cov-report=xml
 
       - name: Upload coverage
