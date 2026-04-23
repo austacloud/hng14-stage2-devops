@@ -101,7 +101,7 @@ jobs:
 
           docker run -d \
             --name api \
-            -p 8000:8000 \  
+            -p 8000:8000 \
             -e REDIS_HOST=redis \
             api:${{ github.sha }}
 
