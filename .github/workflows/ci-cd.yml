@@ -232,7 +232,7 @@ jobs:
           docker run -d \
             --name api \
             -p 8000:8000 \
-            localhost:5000/api:latest
+            api:${{ github.sha }}
 
       - name: Wait for health check
         run: |
