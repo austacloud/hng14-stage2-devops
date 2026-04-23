@@ -5,7 +5,6 @@ WORKDIR /app
 
 COPY . /app
 
-COPY requirements.txt .
 RUN pip install --user --no-cache-dir -r requirements.txt
 
 # ---- Final Stage ----
@@ -22,9 +21,6 @@ RUN useradd -m appuser
 
 # Copy dependencies from builder
 COPY --from=builder /root/.local /home/appuser/.local
-
-# Copy app code
-COPY api/ /app/api/
 
 RUN chown -R appuser:appuser /app
 

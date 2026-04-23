@@ -72,7 +72,7 @@ jobs:
 
       - name: Build API image
         run: |
-          docker build -t api:${{ github.sha }} -f./api/Dockerfile .
+          docker build -t api:${{ github.sha }} -f ./api/Dockerfile .
 
       # ---------------- RUN API CONTAINER ---------------
 
