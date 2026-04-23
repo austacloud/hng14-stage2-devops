@@ -141,9 +141,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build Docker image
+      - name: Build API image
         run: |
-          docker build -t api:${{ github.sha }} .
+          docker build -t api:${{ github.sha }} -f api/Dockerfile .
+
+      - name: Build Frontend image
+        run: |
+          docker build -t frontend:${{ github.sha }} -f frontend/Dockerfile .
+
+      - name: Build Worker image
+        run: |
+          docker build -t worker:${{ github.sha }} -f worker/Dockerfile .
 
       - name: Install Trivy
         run: |
