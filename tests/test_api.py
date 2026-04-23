@@ -4,6 +4,8 @@ from api.main import app   # adjust if your file name is different
 client = TestClient(app)
 
 # ---------------- HEALTH CHECK ----------------
+
+
 def test_health():
     response = client.get("/health")
     assert response.status_code == 200
