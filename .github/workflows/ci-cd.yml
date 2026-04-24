@@ -53,8 +53,8 @@ jobs:
         with:
           python-version: "3.11"
 
-      - run: pip install -r api/requirements.txt
-      - run: pip install pytest
+      - name: Install dependencies
+      - run: pip install -r $GITHUB_WORKSPACE/requirements.txt
 
       - name: Run API unit tests
         run: pytest
