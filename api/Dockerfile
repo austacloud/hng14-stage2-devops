@@ -15,7 +15,7 @@ WORKDIR /app
 COPY --from=builder /app /app
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl && \
+    apt-get install -y --no-install-recommends curl=7.81.0-1ubuntu1.10 && \
     rm -rf /var/lib/apt/lists/*
 
 # Create non-root user
