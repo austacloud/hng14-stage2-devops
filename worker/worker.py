@@ -33,12 +33,6 @@ while True:
         print("No jobs in queue...")
 
 
-
-
-
-
-
-
 # import os
 # import redis
 # import time

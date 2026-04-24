@@ -5,6 +5,7 @@ import os
 
 app = FastAPI()
 
+
 def get_redis():
     return redis.Redis(
         host=os.getenv("REDIS_HOST", "redis"),
@@ -45,10 +46,6 @@ def get_job(job_id: str):
         return {"error": "not found"}
 
     return {"job_id": job_id, "status": status}
-
-
-
-
 
 
 # from fastapi import FastAPI
