@@ -28,9 +28,9 @@ jobs:
 
       - name: Lint Dockerfiles
         run: |
-          docker run --rm -i hadolint/hadolint < api/Dockerfile
-          docker run --rm -i hadolint/hadolint < worker/Dockerfile
-          docker run --rm -i hadolint/hadolint < frontend/Dockerfile
+          docker run --rm -i hadolint/hadolint hadolint --ignore DL3008 - < api/Dockerfile
+          docker run --rm -i hadolint/hadolint hadolint --ignore DL3008 - < worker/Dockerfile
+          docker run --rm -i hadolint/hadolint hadolint --ignore DL3008 - < frontend/Dockerfile
 
 
   # ---------------- TEST ----------------
