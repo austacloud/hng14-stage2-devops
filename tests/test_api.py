@@ -14,7 +14,7 @@ def test_health():
 
 
 # ---------------- CREATE JOB ----------------
-@patch("api.main.r")
+@patch("api.main.get_redis")
 def test_create_job(mock_redis):
     mock_redis.lpush.return_value = 1
 
@@ -26,7 +26,7 @@ def test_create_job(mock_redis):
 
 
 # ---------------- GET JOB STATUS ----------------
-@patch("api.main.r")
+@patch("api.main.get_redis")
 def test_get_job_status(mock_redis):
     mock_redis.lpush.return_value = 1
     mock_redis.get.return_value = "completed"
