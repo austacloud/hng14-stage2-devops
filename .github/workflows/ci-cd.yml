@@ -103,6 +103,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Build API image
+        run: docker build -t api:${{ github.sha }} api
+
       - name: Scan API image
         uses: aquasecurity/trivy-action@master
         with:
