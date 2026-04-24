@@ -13,17 +13,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Python setup
+      - uses: actions/setup-python@v5
+        with:
+        python-version: '3.11'
+
       - name: Install Python deps
         run: pip install flake8
 
       - name: Lint Python
-        run: flake8 api
+        run: flake8 api worker
+
+        # Node setup
+      - uses: actions/setup-node@v4
+        with:
+        node-version: '18'
 
       - name: Lint JavaScript
         run: |
           cd frontend
-          npm install
-          npm install eslint@8 --save-dev
+          npm ci
           npx eslint .
 
       - name: Lint Dockerfiles
