@@ -339,20 +339,8 @@ jobs:
 #           if curl -f http://localhost:8080/health; then
 #             echo "New container is healthy"
 #             exit 0
-          fi
-          sleep 5
-        done
-        echo "Health check failed"
-        docker logs api_new
-        docker rm -f api_new
-        exit 1
-
-    # 🔄 SWITCH TRAFFIC
-    - name: Replace old container
-      run: |
-        docker stop api || true
-        docker rm api || true
-        docker rename api_new api
+        
+       
   
 
 
