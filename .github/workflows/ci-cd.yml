@@ -16,7 +16,7 @@ jobs:
       # Python setup
       - uses: actions/setup-python@v5
         with:
-        python-version: '3.11'
+          python-version: '3.11'
 
       - name: Install Python deps
         run: pip install flake8
@@ -27,7 +27,7 @@ jobs:
         # Node setup
       - uses: actions/setup-node@v4
         with:
-        node-version: '18'
+          node-version: '18'
 
       - name: Lint JavaScript
         run: |
