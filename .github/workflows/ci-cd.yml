@@ -131,13 +131,16 @@ jobs:
     if: github.ref == 'refs/heads/main'
 
     steps:
+      -name: Checkout code
+        uses: actions/checkout@v4 
+
       - name: Build API image
-        run: docker build -t api:${{ github.sha }} ./api
+        run: docker build -t api:${{ github.sha }} api
 
       - name: Run container
         run: |
           docker run -d --name api -p 80:8000 api:${{ github.sha }}
-          
+
       - name: Deploy (example - Docker run / server deploy)
         run: |
           echo "Deploying application..."
