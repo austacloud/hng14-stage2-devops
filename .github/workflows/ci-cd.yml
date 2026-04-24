@@ -125,12 +125,12 @@ jobs:
 
 
 # ---------------- DEPLOY ----------------
-deploy:
-  needs: integration
-  runs-on: ubuntu-latest
-  if: github.ref == 'refs/heads/main'
+  deploy:
+    needs: integration
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
 
-  steps:
+    steps:
     - name: Checkout code
       uses: actions/checkout@v4 
 
@@ -163,6 +163,9 @@ deploy:
         docker stop api || true
         docker rm api || true
         docker rename api_new api
+  
+
+
   
   
   
