@@ -23,6 +23,7 @@ jobs:
         run: |
           cd frontend
           npm install
+          npm install eslint@8 --save-dev
           npx eslint .
 
       - name: Lint Dockerfiles
