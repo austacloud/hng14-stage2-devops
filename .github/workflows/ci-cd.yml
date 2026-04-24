@@ -131,6 +131,13 @@ jobs:
     if: github.ref == 'refs/heads/main'
 
     steps:
+      - name: Build API image
+        run: docker build -t api:${{ github.sha }} ./api
+
+      - name: Run container
+        run: |
+          docker run -d --name api -p 80:8000 api:${{ github.sha }}
+          
       - name: Deploy (example - Docker run / server deploy)
         run: |
           echo "Deploying application..."
