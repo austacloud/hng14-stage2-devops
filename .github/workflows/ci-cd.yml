@@ -137,6 +137,11 @@ jobs:
       - name: Build API image
         run: docker build -t api:${{ github.sha }} api
 
+      - name: Remove old container
+        run: |
+          docker stop api || true
+          docker rm api || true
+
       - name: Run container
         run: |
           docker run -d --name api -p 80:8000 api:${{ github.sha }}
