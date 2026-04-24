@@ -146,20 +146,13 @@ jobs:
         run: |
           docker run -d --name api -p 80:8000 api:${{ github.sha }}
 
-      - name: Deploy (example - Docker run / server deploy)
+      - name: Health check
         run: |
-          echo "Deploying application..."
-
-          docker pull api:${{ github.sha }} || true
-
-          docker run -d --name api -p 80:8000 api:${{ github.sha }}
-
+          echo "Checking application..."
           for i in {1..12}; do
-            curl -f http://localhost:80/health && break
+            curl -f http://localhost:80/health && exit 0
             sleep 5
           done
-
-
 
 
 
